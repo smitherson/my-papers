@@ -1,0 +1,94 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath}
+\setcounter{MaxMatrixCols}{20}
+
+\begin{document}
+
+
+The purpose of this document is to have a good mathematical view on deriving the jacobian used for bundle adjustment. 
+\par
+\section{Some formulas}
+
+ $$ \pi(X,Y,Z) = \begin{pmatrix}
+\frac{f_x.X}{Z}+c_x \\
+\frac{f_y.Y}{Z}+c_y \\
+\end{pmatrix} 
+$$
+$$
+\pi^{-1}(x,y,d) = \begin{pmatrix}
+\frac{x-c_x}{f_x}d \\
+\frac{y-c_y}{f_y}d \\
+d \\
+\end{pmatrix} $$  $$
+w(X,Y,Z) = \begin{pmatrix}
+r_{11} & r_{12} & r_{13} & t_x \\
+r_{21} & r_{22} & r_{23} & t_y \\
+r_{31} & r_{32} & r_{33}& t_x \\
+0 & 0 & 0 & 1 \\
+\end{pmatrix}
+\begin{pmatrix}
+X\\ Y \\ Z \\ 1
+\end{pmatrix}
+$$
+\par
+\section{Problem definition} We have $k$ cameras in $\Omega_k$ and $i$ points in $\Omega_i$. Each image has a position in space defined by $R$ and $t$(rotation and trasnlation, $SE3$), each point has a depth,$d$, and $x,y$ coords in the image in which it was first seen. We want to minimize the reprojection error of the points on the $K$ images.
+
+\[
+E = \sum_{k \in \Omega_{k}} \sum_{i \in \Omega_{i}} I_1(x_i,y_i)-I_2\bigg(\pi(w\big[{G(\boldsymbol{\xi})},\pi^{-1}(x_i,y_i,\mathbf{d})\big])\bigg)
+\]
+The bold ones are the variables.
+
+So the Jacobian for two images and one point looks like this:
+\[
+J_E = J_{I_2}J_{\pi}J_{w}J_{\pi^{-1}}
+\]
+Lets start from back to forth
+\[
+J_{\pi^{-1}} = \frac{\partial \pi^{-1}(x,y,\mathbf{d})}{\partial v, w, d } \biggr\rvert_{x=x1,y=y1,d=d} = 
+\begin{pmatrix}  
+& v_1 & v_2 & v_3 & w_1 & w_2 & w_3 & d\\ 
+X_1 & 0 & 0 & 0 & 0 & 0 & 0 & (x_1-c_x)/f_x\\
+Y_1 & 0 & 0 & 0 & 0 & 0 & 0 & (y_1-c_y)/f_y \\
+Z_1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+\end{pmatrix}
+\]
+\[
+J_{G} = \frac{\partial G( \boldsymbol{\xi} )}{\partial v, w, d } \biggr\rvert_{\xi = \xi } = 
+\begin{pmatrix}  
+& v_1 & v_2 & v_3 & w_1 & w_2 & w_3 & d\\ 
+r_{11} & 0 & 0 & 0 & 0 & r_{31} & -r_{21} & 0 \\
+r_{21} & 0 & 0 & 0 & -r_{31} & 0 & r_{11} & 0 \\
+r_{31} & 0 & 0 & 0 & r_{21} & -r_{11} & 0 & 0 \\
+r_{12} & 0 & 0 & 0 & 0 & r_{32} & -r_{22} & 0 \\
+r_{22} & 0 & 0 & 0 & -r_{32} & 0 & r_{12} & 0 \\
+r_{32} & 0 & 0 & 0 & r_{22} & -r_{12} & 0 & 0 \\
+r_{13} & 0 & 0 & 0 & 0 & r_{33} & -r_{23} & 0 \\
+r_{23} & 0 & 0 & 0 & -r_{33} & 0 & r_{13} & 0 \\
+r_{33} & 0 & 0 & 0 & r_{23} & -r_{13} & 0 & 0 \\
+t_x & 1 & 0 & 0 & 0 & t_z & -t_y & 0 \\
+t_y & 0 & 1 & 0 & -t_z & 0 & t_x & 0 \\
+t_z & 0 & 0 & 1 & t_y & t_x & 0 & 0 \\
+\end{pmatrix}
+\]
+\\
+\[
+J_{w} = \frac{\partial w(G,p)}{\partial G,p } \biggr\rvert_{G=G(\xi), p = p} =
+\]
+\[
+\begin{pmatrix}  
+& r_{11} & r_{21} & r_{31} & r_{12} & r_{22} & r_{33} & r_{13} & r_{23} & r_{33} & t_x & t_z & t_y & X_1 & Y_1 & Z_1 \\ 
+X_2 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & 0 & r_{11} & 0 & 0\\
+Y_2 & 0 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & 0 & r_{22} & 0\\
+Z_2 & 0 & 0 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & 0 & r_{33}\\
+\end{pmatrix}
+\]
+
+\[ J{\pi}(X_2,Y_2,Z_2) = \begin{pmatrix}
+& X_2 & Y_2 & Z_2\\
+x_2 & \frac{f_x}{Z_2} & 0 & -\frac{f_x.X_2}{Z^2_{2}} \\
+y_2 & 0 & \frac{f_Y}{Z_2} & -\frac{f_y.Y_2}{Z^2_{2}} \\
+\end{pmatrix} 
+\]
+
+
+\end{document}
