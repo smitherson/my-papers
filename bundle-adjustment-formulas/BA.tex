@@ -42,7 +42,8 @@ So the Jacobian for two images and one point looks like this:
 \[
 J_E = J_{I_2}J_{\pi}J_{w}J_{\pi^{-1}}
 \]
-Lets start from back to forth
+Lets start from back to forth. 
+\par \emph{Note: the first column and first row are respectively the functions and the variables we derive on. This is written as the jacobians are quite involved and it's easier to understand them like this.}
 \[
 J_{\pi^{-1}} = \frac{\partial \pi^{-1}(x,y,\mathbf{d})}{\partial v, w, d } \biggr\rvert_{x=x1,y=y1,d=d} = 
 \begin{pmatrix}  
@@ -77,9 +78,9 @@ J_{w} = \frac{\partial w(G,p)}{\partial G,p } \biggr\rvert_{G=G(\xi), p = p} =
 \[
 \begin{pmatrix}  
 & r_{11} & r_{21} & r_{31} & r_{12} & r_{22} & r_{33} & r_{13} & r_{23} & r_{33} & t_x & t_z & t_y & X_1 & Y_1 & Z_1 \\ 
-X_2 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & 0 & r_{11} & 0 & 0\\
-Y_2 & 0 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & 0 & r_{22} & 0\\
-Z_2 & 0 & 0 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & 0 & r_{33}\\
+X_2 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & 0 & r_{11} & r_{12} & r_{13}\\
+Y_2 & 0 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & r_{21} & r_{22} & r_{23}\\
+Z_2 & 0 & 0 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & r_{31} & r_{32} & r_{33}\\
 \end{pmatrix}
 \]
 
@@ -90,5 +91,79 @@ y_2 & 0 & \frac{f_Y}{Z_2} & -\frac{f_y.Y_2}{Z^2_{2}} \\
 \end{pmatrix} 
 \]
 
+\vspace*{7cm}
+Lets multiply them back to forth again
 
+\[
+J_w.J_{G\pi^{-1}} =
+\begin{pmatrix}  
+& r_{11} & r_{21} & r_{31} & r_{12} & r_{22} & r_{33} & r_{13} & r_{23} & r_{33} & t_x & t_z & t_y & X_1 & Y_1 & Z_1 \\ 
+X_2 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & 0 & r_{11} & r_{12} & r_{13}\\
+Y_2 & 0 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & 0 & r_{21} & r_{22} & r_{23}\\
+Z_2 & 0 & 0 & X_1 & 0 & 0 & Y_1 & 0 & 0 & Z_1 & 0 & 0 & 1 & r_{31} & r_{32} & r_{33}\\
+\end{pmatrix}
+\]
+\[
+\begin{pmatrix}  
+& v_1 & v_2 & v_3 & w_1 & w_2 & w_3 & d\\ 
+
+r_{11} & 0 & 0 & 0 & 0 & r_{31} & -r_{21} & 0 \\
+r_{21} & 0 & 0 & 0 & -r_{31} & 0 & r_{11} & 0 \\
+r_{31} & 0 & 0 & 0 & r_{21} & -r_{11} & 0 & 0 \\
+r_{12} & 0 & 0 & 0 & 0 & r_{32} & -r_{22} & 0 \\
+r_{22} & 0 & 0 & 0 & -r_{32} & 0 & r_{12} & 0 \\
+r_{32} & 0 & 0 & 0 & r_{22} & -r_{12} & 0 & 0 \\
+r_{13} & 0 & 0 & 0 & 0 & r_{33} & -r_{23} & 0 \\
+r_{23} & 0 & 0 & 0 & -r_{33} & 0 & r_{13} & 0 \\
+r_{33} & 0 & 0 & 0 & r_{23} & -r_{13} & 0 & 0 \\
+t_x & 1 & 0 & 0 & 0 & t_z & -t_y & 0 \\
+t_y & 0 & 1 & 0 & -t_z & 0 & t_x & 0 \\
+t_z & 0 & 0 & 1 & t_y & t_x & 0 & 0 \\
+X_1 & 0 & 0 & 0 & 0 & 0 & 0 & (x_1-c_x)/f_x\\
+Y_1 & 0 & 0 & 0 & 0 & 0 & 0 & (y_1-c_y)/f_y \\
+Z_1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+\end{pmatrix}
+ = 
+\]
+\[
+= \begin{pmatrix}
+1 & 0 & 0 & 0 & Z_2 & -Y_2 & v_1 \\
+0 & 1 & 0 & -Z_2 & 0 & X_2 & v_2 \\
+0 & 0 & 1 & Y_2 & -X_2 & 0 & v_3 \\
+\end{pmatrix} = J_{wG\pi^{-1}}
+\]
+Here $X_2$ is unprojected, scaled to depth, roteted and translated $x_1$ and $v$ is unprojected and rotated only, no translation. Or whatever.. this is a very bad explanation what it is. I'll write a better one soon.
+\par Now we continue with
+
+\[
+J_{I2}.J_{\pi}.J_{wG\pi^{-1}} =
+\begin{pmatrix}
+\nabla Ix &
+\nabla Iy
+\end{pmatrix} 
+\begin{pmatrix}
+\frac{f_x}{Z_2} & 0 & -\frac{f_x.X_2}{Z^2_{2}} \\
+0 & \frac{f_y}{Z_2} & -\frac{f_y.Y_2}{Z^2_{2}} \\
+\end{pmatrix} 
+\begin{pmatrix}
+1 & 0 & 0 & 0 & Z_2 & -Y_2 & v_1 \\
+0 & 1 & 0 & -Z_2 & 0 & X_2 & v_2 \\
+0 & 0 & 1 & Y_2 & -X_2 & 0 & v_3 \\
+\end{pmatrix} =
+\]
+\[
+= \begin{pmatrix}
+fx \nabla Ix &
+fy \nabla Iy
+\end{pmatrix} 
+\begin{pmatrix}
+\frac{1}{Z_2} & 0 & -\frac{X_2}{Z^2_{2}} \\
+0 & \frac{1}{Z_2} & -\frac{Y_2}{Z^2_{2}} \\
+\end{pmatrix} 
+\begin{pmatrix}
+1 & 0 & 0 & 0 & Z_2 & -Y_2 & v_1 \\
+0 & 1 & 0 & -Z_2 & 0 & X_2 & v_2 \\
+0 & 0 & 1 & Y_2 & -X_2 & 0 & v_3 \\
+\end{pmatrix} 
+\]7
 \end{document}
