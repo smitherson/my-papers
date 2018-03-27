@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{article}
+ \documentclass[a4paper,12pt]{article}
 \usepackage{amsmath}
 \setcounter{MaxMatrixCols}{20}
 
@@ -127,12 +127,12 @@ Z_1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
 \]
 \[
 = \begin{pmatrix}
-1 & 0 & 0 & 0 & Z_2 & -Y_2 & v_1 \\
-0 & 1 & 0 & -Z_2 & 0 & X_2 & v_2 \\
-0 & 0 & 1 & Y_2 & -X_2 & 0 & v_3 \\
+1 & 0 & 0 & 0 & Z_2 & -Y_2 & q_1 \\
+0 & 1 & 0 & -Z_2 & 0 & X_2 & q_2 \\
+0 & 0 & 1 & Y_2 & -X_2 & 0 & q_3 \\
 \end{pmatrix} = J_{wG\pi^{-1}}
 \]
-Here $X_2$ is unprojected, scaled to depth, roteted and translated $x_1$ and $v$ is unprojected and rotated only, no translation. Or whatever.. this is a very bad explanation what it is. I'll write a better one soon.
+Here $X_2$ is unprojected, scaled to depth, roteted and translated $x_1$ and $q$ is unprojected and rotated only, no translation. Or whatever.. this is a very bad explanation what it is. I'll write a better one soon.
 \par Now we continue with
 
 \[
@@ -146,9 +146,9 @@ J_{I2}.J_{\pi}.J_{wG\pi^{-1}} =
 0 & \frac{f_y}{Z_2} & -\frac{f_y.Y_2}{Z^2_{2}} \\
 \end{pmatrix} 
 \begin{pmatrix}
-1 & 0 & 0 & 0 & Z_2 & -Y_2 & v_1 \\
-0 & 1 & 0 & -Z_2 & 0 & X_2 & v_2 \\
-0 & 0 & 1 & Y_2 & -X_2 & 0 & v_3 \\
+1 & 0 & 0 & 0 & Z_2 & -Y_2 & q_1 \\
+0 & 1 & 0 & -Z_2 & 0 & X_2 & q_2 \\
+0 & 0 & 1 & Y_2 & -X_2 & 0 & q_3 \\
 \end{pmatrix} =
 \]
 \[
@@ -161,9 +161,42 @@ fy \nabla Iy
 0 & \frac{1}{Z_2} & -\frac{Y_2}{Z^2_{2}} \\
 \end{pmatrix} 
 \begin{pmatrix}
-1 & 0 & 0 & 0 & Z_2 & -Y_2 & v_1 \\
-0 & 1 & 0 & -Z_2 & 0 & X_2 & v_2 \\
-0 & 0 & 1 & Y_2 & -X_2 & 0 & v_3 \\
+1 & 0 & 0 & 0 & Z_2 & -Y_2 & q_1 \\
+0 & 1 & 0 & -Z_2 & 0 & X_2 & q_2 \\
+0 & 0 & 1 & Y_2 & -X_2 & 0 & q_3 \\
 \end{pmatrix} 
-\]7
+\]
+\[
+= \begin{pmatrix}
+fx \nabla Ix &
+fy \nabla Iy
+\end{pmatrix} 
+\begin{pmatrix}
+\frac{1}{Z_2} & 0 & -\frac{X_2}{Z_2^2} & -\frac{X_2 Y_2}{Z_2^2} & 1+\frac{X_2^2}{Z_2^2} & -\frac{Y_2}{Z_2} & \frac{q_1}{Z_2} - \frac{q_3 X_2}{Z_2^2}\\
+0 & \frac{1}{Z_2} & -\frac{Y_2}{Z_2^2} & -1-\frac{Y_2^2}{Z_2^2} & \frac{X_2 Y_2}{Z_2^2} & \frac{X_2}{Z_2} & \frac{q_2}{Z_2} - \frac{v_3 Y_2}{Z_2^2} \\
+
+\end{pmatrix} 
+\]
+
+\[
+= \begin{pmatrix}
+fx \nabla Ix( \frac{1}{Z_2}) \\ 
+fy \nabla Iy( \frac{1}{Z_2}) \\ 
+-(fx \nabla Ix X_2 + f_y\nabla Iy Y_2 )\frac{ 1}{Z_2^2} \\ 
+fx \nabla Ix (-\frac{X_2 Y_2}{Z_2^2} ) + fy \nabla Iy ( -1-\frac{Y_2^2}{Z_2^2} ) \\
+fx \nabla Ix ( 1+\frac{X_2^2}{Z_2^2} ) + fy \nabla Iy (  \frac{X_2 Y_2}{Z_2^2} ) \\
+fx \nabla Ix ( -\frac{Y_2}{Z_2} ) + fy \nabla Iy (  \frac{X_2}{Z_2}) \\
+fx \nabla Ix (  \frac{q_1}{Z_2} - \frac{q_3 X_2}{Z_2^2} ) + fy \nabla Iy (  \frac{q_2}{Z_2} - \frac{q_3 Y_2}{Z_2^2}) \\
+\end{pmatrix} 
+\]
+Now lets calculate the Hessian. I've never calcucated a Hessian before, so if this sentance is still here the hessian calculation has not been tested in code. Should happen untill 15 April 2018.
+\par
+The first column is all the derivatives of $fx \nabla Ix( \frac{1}{Z_2})$
+\[
+\frac{\delta fx \nabla Ix( \frac{1}{Z_2})} {\delta v_1} = 
+\frac{\delta fx \nabla Ix( \frac{1}{r_{31}X_1+r_{32}Y_1+r_{33}Z_1 + t_z})} {\delta v_1}
+\]
 \end{document}
+
+
+
