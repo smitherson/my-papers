@@ -196,6 +196,16 @@ The first column is all the derivatives of $fx \nabla Ix( \frac{1}{Z_2})$
 \frac{\delta fx \nabla Ix( \frac{1}{Z_2})} {\delta v_1} = 
 \frac{\delta fx \nabla Ix( \frac{1}{r_{31}X_1+r_{32}Y_1+r_{33}Z_1 + t_z})} {\delta v_1}
 \]
+\section{Regularization of the semi-dense map}
+We add a regularization term to the error function
+\[
+E = \sum_{k \in \Omega_{k}} \sum_{i \in \Omega_{i}} I_1(x_i,y_i)-I_2\bigg(\pi(w\big[{G(\boldsymbol{\xi})},\pi^{-1}(x_i,y_i,\mathbf{d})\big])\bigg) + \sum_{d_i \in \Omega_d} (d_i-\mathbf{d})^2
+\]
+Now we're interested in the jacobian of the regularization term $\Omega_d$ is the set of pixels we consider neighbors of the $(x_i,y_i)$ pixel.
+\[
+J_{E_r} += (\sum_{d_i \in \Omega_d} d_i^2 + d^2-2dd_i)' = 2\sum_{d_i \in \Omega_d}  d-d_i
+\]
+The jacobian is zeros and the term at the end for the last item. We might want to divide by $|\Omega_d|$
 \end{document}
 
 
